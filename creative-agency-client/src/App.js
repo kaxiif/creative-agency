@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import { providedServices } from './FakeData/providedServices';
 import { reviews } from './FakeData/reviews';
 import Login from './Components/Shared/Login/Login';
+import DashboardNav from './Components/Shared/DashboardNav/DashboardNav';
+import PrivateRoute from './Components/Shared/PrivateRoute/PrivateRoute';
 
 function App({fetchServicesData, fetchServicesSuccess, fetchReviewData}) {
 
@@ -26,8 +28,12 @@ function App({fetchServicesData, fetchServicesSuccess, fetchReviewData}) {
           <Route path="/login">
             <Login></Login>
           </Route>
-          <Route path="*">
-          </Route>
+          <PrivateRoute path="/dashboard">
+            <DashboardNav></DashboardNav>
+          </PrivateRoute>
+          <PrivateRoute path="/dashboard/:service">
+            <DashboardNav></DashboardNav>
+          </PrivateRoute>
         </Switch>
     </Router>
   );

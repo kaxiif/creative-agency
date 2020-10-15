@@ -23,13 +23,13 @@ const TitleBar = ({user, addLoggedinUser}) => {
     }
     return (
         <>
-           <Navbar className="bg-transparent" variant="light">
+           <Navbar collapseOnSelect  expand="sm" className="bg-transparent" variant="light">
                <Container>
                     <Navbar.Brand><Link to={`/`}><Image width={180} src="/images/logos/applogo.png" alt="logo" /></Link></Navbar.Brand>
                     <Navbar.Toggle />
                     <Navbar.Collapse className="justify-content-end font-weight-bold">
                         <Navbar.Text>
-                            <Link className="nav-link" to={`/`}>Home</Link>
+                            <Nav.Link as={Link} to={`/`}>Home</Nav.Link>
                         </Navbar.Text>
                         <Navbar.Text>
                             <Nav.Link>Our Portfolio</Nav.Link>
@@ -47,7 +47,7 @@ const TitleBar = ({user, addLoggedinUser}) => {
                                 <Nav.Link>{user.displayName}</Nav.Link>
                             </Navbar.Text>
                             <Navbar.Text>
-                               <Link to={`/dashboard`} className="nav-link">My Events</Link>
+                               <Nav.Link as={Link} to={`/dashboard`}>My Events</Nav.Link>
                             </Navbar.Text>
                             <Navbar.Text>
                                 <Nav.Link><Button onClick={signOut} className="font-weight-bold" variant="warning">Sign Out</Button></Nav.Link>
@@ -55,7 +55,7 @@ const TitleBar = ({user, addLoggedinUser}) => {
                             </>:
                             <>
                             <Navbar.Text>
-                                <Link className="nav-link" to={`/login`}><Button className="font-weight-bold" variant="dark"><div className="px-4">Login</div></Button></Link>
+                                <Nav.Link as={Link} to={`/login`}><Button className="font-weight-bold" variant="dark"><div className="px-4">Login</div></Button></Nav.Link>
                             </Navbar.Text>
                             </>
                         }
