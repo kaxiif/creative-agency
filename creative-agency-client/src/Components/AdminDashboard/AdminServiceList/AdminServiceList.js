@@ -1,8 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import DashboardHeader from '../../Shared/DashboardHeader/DashboardHeader';
+import OrderListItem from '../OrderListItem/OrderListItem';
 
-const AdminServiceList = () => {
+const AdminServiceList = ({services}) => {
+    const [servicesOrders, setServiceOrders] = useState([]);
+    
+    useEffect(() => {
+        const fetchOpertaion = async () => {
+            await fetch('http://localhost:5000/getOrders',{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${sessionStorage.getItem('token')}`
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                data.map(order => {
+                    const servicesList =  [...services];
+                    const seletedService =  servicesList.filter(srvc => srvc._id === order.serviceId)[0];
+                    order.serviceName = seletedService.serviceName;
+                    return order;
+                })
+
+                setServiceOrders(data);
+            })
+            .catch(err => console.log(err.message));
+        }
+        fetchOpertaion();
+    }, [services]);
+
     return (
         <div>
             <DashboardHeader displayOption="Service List"></DashboardHeader>
@@ -17,10 +46,19 @@ const AdminServiceList = () => {
                     </tr>
                 </thead>
                 <tbody>
+                    {
+                        servicesOrders.map(order => <OrderListItem data={order} key={order._id}></OrderListItem>)
+                    }
                 </tbody>
             </Table>
         </div>
     );
 };
 
-export default AdminServiceList;
+const mapStateToProps = state => {
+    return {
+        services: state.services
+    }
+}
+
+export default connect(mapStateToProps)(AdminServiceList);

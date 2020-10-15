@@ -12,6 +12,20 @@ export const handleGoogleSignIn = () => {
     return firebase.auth().signInWithPopup(googleProvider)
     .then( res => {
       const newUserInfo = res.user;
+      const addRole = (userEmail, user) => {
+        fetch(`http://localhost:5000/adminSearch?email=${userEmail}`)
+        .then(res => res.json())
+        .then((data) =>{
+          if(data.length > 0){
+            user.role = "admin";
+          }
+          else {
+            user.role = "user";
+          }
+        })
+        return user;
+      }
+      addRole(newUserInfo && newUserInfo.email, newUserInfo);
       newUserInfo.name = newUserInfo.displayName;
       return newUserInfo;
     })

@@ -1,27 +1,40 @@
 import React from 'react';
-import { Container, Row } from 'react-bootstrap';
+import { CardDeck, Container, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { BeatLoader } from 'react-spinners';
 import ServiceItem from '../ServiceItem/ServiceItem';
 
-const ServiceContainer = ({services}) => {
+const ServiceContainer = ({loading, services}) => {
     return (
-        <section style={{height: '500px'}} className="mt-5 d-flex justify-content-center align-items-center">
+        <>
+        <section className="mt-5 d-flex justify-content-center align-items-center">
             <div>
                 <h1 className="text-center">Provide awesome <span className="text-brand">services</span></h1>
-                <Container className="mt-5 pt-5">
-                    <Row>
+                <Container>
+                    <Row  className="py-5">
+                        <CardDeck>
                         {
                             services.map(srvc => <ServiceItem key={srvc.name} data={srvc}></ServiceItem>)
                         }
+                        </CardDeck>
                     </Row>
                 </Container>
+                <div className="text-center">
+                    <BeatLoader
+                        size={50}
+                        color={"#123abc"}
+                        loading={loading}
+                        />
+                </div>
             </div>
         </section>
+        </>
     );
 };
 
 const mapStateToProps = state => {
     return {
+        loading: state.loading,
         services: state.services
     }
 }

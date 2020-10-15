@@ -1,27 +1,72 @@
-import React from 'react';
-import { Button, Col, Image, Row } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Row } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import DashboardHeader from '../../Shared/DashboardHeader/DashboardHeader';
+import ConsumedItem from '../ConsumedItem/ConsumedItem';
 
-const ServiceConsumed = () => {
+const ServiceConsumed = ({user, services}) => {
+    const userEmail = user.email;
+    const [consumedServices, setConsumedServices] = useState([]);
+    
+    useEffect(() => {
+        const fetchOpertaion = async () => {
+            await fetch(`http://localhost:5000/getOrdersFor?user=${userEmail}`,{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${sessionStorage.getItem('token')}`
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                data.map(order => {
+                    const servicesList =  [...services];
+                    const seletedService =  servicesList.filter(srvc => srvc._id === order.serviceId)[0];
+                    order.serviceName = seletedService.serviceName;
+                    order.photo = seletedService.photo;
+                    order.serviceDesc = seletedService.serviceDesc;
+                    if(order.serviceStatus === 'pending'){
+                        order.btnBg = 'info';
+                    }
+                    else if(order.serviceStatus === 'running'){
+                        order.btnBg = 'warning';
+                    }
+                    else if(order.serviceStatus === 'done'){
+                        order.btnBg = 'success';
+                    }
+                    else if(order.serviceStatus === 'rejected'){
+                        order.btnBg = 'danger'
+                    }
+                    else{
+                        order.btnBg = 'dark'
+                    }
+                    return order;
+                })
+
+                setConsumedServices(data);
+            })
+            .catch(err => console.log(err.message));
+        }
+        fetchOpertaion();
+    }, [services, userEmail]);
+
     return (
         <>
             <DashboardHeader displayOption="Service Consumed"></DashboardHeader>
-            <Row className="p-5">
-                <Col style={{ maxWidth: '400px', borderRadius: '20px'}} md={6} className="bg-white p-3">
-                    <Row className="justify-content-between align-items-center">
-                        <Col md={6}>
-                            <Image width={80} src="/images/icons/graphic.png" alt="graphic" fluid/>
-                        </Col>
-                        <Col md={6}>
-                            <Button variant="outline-danger" className="px-4">Pending</Button>
-                        </Col>
-                    </Row>
-                    <h5 className="my-2">Web & Mobile design</h5>
-                    <p><small className="text-secondary">We craft stunning and amazing web UI, using a well drrafted UX to fit your product.</small></p>
-                </Col>
+            <Row className="p-5 justify-content-around">
+                {
+                    consumedServices.map(consumed => <ConsumedItem data={consumed} key={consumed._id}></ConsumedItem>)
+                }
             </Row>
         </>
     );
 };
 
-export default ServiceConsumed;
+const mapStateToProps = state => {
+    return {
+        user: state.user,
+        services: state.services
+    }
+}
+
+export default connect(mapStateToProps)(ServiceConsumed);

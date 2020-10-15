@@ -2,21 +2,38 @@ import React from 'react';
 import { Col, Image, Nav, Row, Tab } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faSignOutAlt, faList, faComment, faPlus, faLockOpen, faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import OrderForm from '../../UserDashBoard/OrderForm/OrderForm';
 import ServiceConsumed from '../../UserDashBoard/ServiceConsumed/ServiceConsumed';
 import GiveReview from '../../UserDashBoard/GiveReview/GiveReview';
 import AdminServiceList from '../../AdminDashboard/AdminServiceList/AdminServiceList';
 import AddService from '../../AdminDashboard/AddService/AddService';
 import MakeAdmin from '../../AdminDashboard/MakeAdmin/MakeAdmin';
+import { connect } from 'react-redux';
+import { handleSignOut } from '../Login/SignOutManager';
+import { addLoggedinUser } from '../../../Redux/AgencyActions/AgencyActions';
 
-const DashboardNav = () => {
+const DashboardNav = ({user, addLoggedinUser}) => {
+    const {role} = user;
+    
+    const location = useLocation();
+    const history = useHistory();
+    let { from } = location.state || { from: { pathname: "/" } };
 
-    const admin = 0;
+    const signOut = (e) => {
+        e.preventDefault();
+        handleSignOut()
+        .then(res => {
+            addLoggedinUser(res);
+            sessionStorage.removeItem('token');
+            history.replace(from);
+        })
+        .catch(err => console.log(err));
+    }
 
     return (
         <section>
-            <Tab.Container defaultActiveKey={admin ? "adminservicelist" : "order"}>
+            <Tab.Container defaultActiveKey={role === 'admin'  ? "adminservicelist" : "order"}>
                 <Row>
                     <Col sm={3} style={{padding: '0px'}}>
                         <Nav variant="tabs" className="justify-content-around flex-column bg-warning min-vh-100">
@@ -25,7 +42,7 @@ const DashboardNav = () => {
                                     <Nav.Link className="text-center"><Image  width={180} src="/images/logos/applogo.png" alt="Group"/></Nav.Link>
                                 </Nav.Item>
                                 {
-                                    admin ?
+                                    role === 'admin' ?
                                     <>
                                     <Nav.Item>
                                         <Nav.Link className="text-decoration-none text-dark font-weight-bold" eventKey="adminservicelist"><FontAwesomeIcon icon={faLockOpen} /><span className="mx-2">Service List</span></Nav.Link>
@@ -53,7 +70,7 @@ const DashboardNav = () => {
                             </div>
                             <div>
                                 <Nav.Item>
-                                    <Nav.Link as={Link} className="text-decoration-none text-dark font-weight-bold"><FontAwesomeIcon icon={faSignOutAlt} /><span className="mx-2">Logout</span></Nav.Link>
+                                    <Nav.Link onClick={signOut} as={Link} className="text-decoration-none text-dark font-weight-bold"><FontAwesomeIcon icon={faSignOutAlt} /><span className="mx-2">Logout</span></Nav.Link>
                                 </Nav.Item>
                             </div>
                         </Nav>
@@ -86,4 +103,14 @@ const DashboardNav = () => {
     );
 };
 
-export default DashboardNav;
+const mapStateToProps = state => {
+    return {
+        user: state.user
+    }
+}
+
+const mapDispatchToProps = {
+    addLoggedinUser : addLoggedinUser
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardNav);

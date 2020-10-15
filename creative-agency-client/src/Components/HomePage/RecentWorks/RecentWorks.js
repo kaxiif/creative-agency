@@ -30,7 +30,7 @@ const RecentWorks = () => {
     }, []);
 
     return (
-        <section style={{height:'650px'}} className="bg-dark d-flex align-items-center justify-content-center"> 
+        <section style={{height:'auto'}} className="bg-dark d-flex align-items-center justify-content-center"> 
             <Container fluid>
                 <Row>
                     <Col md={12} className="text-center">

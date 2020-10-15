@@ -3,10 +3,20 @@ import { useForm } from 'react-hook-form';
 import DashboardHeader from '../../Shared/DashboardHeader/DashboardHeader';
 
 const MakeAdmin = () => {
-    const { register, handleSubmit, errors } = useForm();
+    const { register, handleSubmit, errors, reset } = useForm();
 
     const onSubmit = data => {
-        console.log(data);
+        fetch('http://localhost:5000/adminEntry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                reset();
+            }
+        });
     }
     return (
         <>
@@ -14,8 +24,8 @@ const MakeAdmin = () => {
 
         <form className="p-5 bg-white m-2 rounded" onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">
-                <input type="email" ref={register({ required: true })} name="email" placeholder="Enter email" className="form-control form-control-lg"/>
-                {errors.email && <span className="text-danger">This field is required</span>}
+                <input type="email" ref={register({ required: true })} name="adminEmail" placeholder="Enter email" className="form-control form-control-lg"/>
+                {errors.adminEmail && <span className="text-danger">This field is required</span>}
             </div>
 
             <div className="form-group text-right">

@@ -37,10 +37,11 @@ const upload = multer({
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true  });
 client.connect(err => {
-    const serviceCollection = client.db("VolunteerNetwork").collection("services");
-    const registrationCollection = client.db("VolunteerNetwork").collection("registrations");
+    const serviceCollection = client.db("creative-agency-db").collection("services");
+    const adminCollection = client.db("creative-agency-db").collection("admins");
+    const serviceRegistrationCollection = client.db("creative-agency-db").collection("serviceRegistration");
 
-    app.post('/addService',upload.single('banner'), (req, res) => {
+    app.post('/addService',upload.single('serviceBanner'), (req, res) => {
         const img = fs.readFileSync(req.file.path);
         const encode_img = img.toString('base64');
 
@@ -63,7 +64,7 @@ client.connect(err => {
         })
     })
 
-    app.get('/getEvents', (req, res) => {
+    app.get('/getServices', (req, res) => {
         serviceCollection.find({})
         .toArray((err, documents) => {
             if(err) console.log(err);
@@ -89,6 +90,40 @@ client.connect(err => {
             else{
                 res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`})
             }
+        })
+    })
+
+    app.post('/adminEntry', (req, res) => {
+        const adminEmail = req.body;
+        adminCollection.insertOne(adminEmail)
+        .then((result) => {
+            if(result.insertedCount > 0){
+                res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`});
+            }
+            else{
+                res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`})
+            }
+        })
+    })
+
+    app.post('/order', (req, res) => {
+        const orderInfo = req.body;
+        serviceRegistrationCollection.insertOne(orderInfo)
+        .then((result) => {
+            if(result.insertedCount > 0){
+                res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`});
+            }
+            else{
+                res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`})
+            }
+        })
+    })
+
+    app.get('/adminSearch', (req, res) => {
+        const {email} = req.query;
+        adminCollection.find({ adminEmail : email})
+        .toArray((err, documents) => {
+            res.send(documents);
         })
     })
 
@@ -121,13 +156,13 @@ client.connect(err => {
         }
     })
 
-    app.get('/getRegistrations', (req, res) => {
+    app.get('/getOrders', (req, res) => {
         const bearer = req.headers.authorization;
         if(bearer && bearer.startsWith('Bearer ')){
           const userToken = bearer.split(' ')[1];
           admin.auth().verifyIdToken(userToken)
           .then(function(decodedToken) {
-                registrationCollection.find({})
+            serviceRegistrationCollection.find({})
                 .toArray((err, documents) => {
                     res.send(documents);
                 })
@@ -138,6 +173,36 @@ client.connect(err => {
         else{
           res.status(401).send({"status":"Unautorized"});
         }
+    })
+
+
+    app.get('/getOrdersFor', (req, res) => {
+        const {user} = req.query;
+        const bearer = req.headers.authorization;
+        if(bearer && bearer.startsWith('Bearer ')){
+          const userToken = bearer.split(' ')[1];
+          admin.auth().verifyIdToken(userToken)
+          .then(function(decodedToken) {
+            serviceRegistrationCollection.find({email: user})
+                .toArray((err, documents) => {
+                    res.send(documents);
+                })
+          }).catch(function(error) {
+            res.status(401).send({"status":"Unautorized"});
+          });
+        }
+        else{
+          res.status(401).send({"status":"Unautorized"});
+        }
+    })
+
+    app.patch('/updateStatus/:id', (req, res) => {
+        console.log(req.body);
+        serviceRegistrationCollection.updateOne({_id : ObjectId(req.params.id)},
+        {
+            $set:{ serviceStatus: req.body.status}
+        })
+        .then(result => res.send(result.modifiedCount > 0));
     })
 
     app.get('/deleteRegistration/:id', (req, res) => {

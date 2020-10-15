@@ -3,10 +3,26 @@ import { useForm } from 'react-hook-form';
 import DashboardHeader from '../../Shared/DashboardHeader/DashboardHeader';
 
 const AddService = () => {
-    const { register, handleSubmit, errors } = useForm();
+    const { register, handleSubmit, errors, reset } = useForm();
 
     const onSubmit = data => {
-        console.log(data);
+        const serviceData = new FormData();
+        serviceData.append('serviceName', data.servicename);
+        serviceData.append('serviceDesc', data.servicedescription);
+        serviceData.append('serviceBanner', data.servicebanner[0]);
+
+
+        fetch('http://localhost:5000/addService', {
+            method: 'POST',
+            body: serviceData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success'){
+                reset();
+            }
+        })
+
     }
 
     return (
@@ -22,14 +38,14 @@ const AddService = () => {
                             </div>
                             <div className="form-group">
                                 <label htmlFor="description">Service Description</label>
-                                <textarea rows={5} ref={register({ required: true })} name="description" placeholder="Description" className="form-control form-control-lg"/>
-                                {errors.description && <span className="text-danger">This field is required</span>}
+                                <textarea rows={5} ref={register({ required: true })} name="servicedescription" placeholder="Description" className="form-control form-control-lg"/>
+                                {errors.servicedescription && <span className="text-danger">This field is required</span>}
                             </div>
                         </div>
                         <div className="col-6">
                             <label htmlFor="projectfile">Service File</label>
-                            <button className="btn btn-outline-success btn-block"><input ref={register({ required: true })} name="projectfile" className="form-control bg-transparent" placeholder="Upload project file" type="file" /></button>
-                            {errors.projectfile && <span className="text-danger">This field is required</span>}
+                            <button className="btn btn-outline-success btn-block"><input ref={register({ required: true })} name="servicebanner" className="form-control bg-transparent" placeholder="Upload project file" type="file" /></button>
+                            {errors.servicebanner && <span className="text-danger">This field is required</span>}
                         </div>
                     </div>
 

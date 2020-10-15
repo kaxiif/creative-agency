@@ -4,7 +4,7 @@ import { Button, Container, Image, Nav, Navbar } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { addLoggedinUser } from '../../../Redux/AgencyActions/AgencyActions';
-import { handleSignOut } from './SignOutManager';
+import { handleSignOut } from '../Login/SignOutManager';
 
 const TitleBar = ({user, addLoggedinUser}) => {
 
@@ -13,14 +13,15 @@ const TitleBar = ({user, addLoggedinUser}) => {
     let { from } = location.state || { from: { pathname: "/" } };
 
     const signOut = () => {
-        // handleSignOut()
-        // .then(res => {
-        //     addLoggedinUser(res);
-        //     sessionStorage.removeItem('token');
-        //     history.replace(from);
-        // })
-        // .catch(err => console.log(err));
+        handleSignOut()
+        .then(res => {
+            addLoggedinUser(res);
+            sessionStorage.removeItem('token');
+            history.replace(from);
+        })
+        .catch(err => console.log(err));
     }
+
     return (
         <>
            <Navbar collapseOnSelect  expand="sm" className="bg-transparent" variant="light">
@@ -47,15 +48,12 @@ const TitleBar = ({user, addLoggedinUser}) => {
                                 <Nav.Link>{user.displayName}</Nav.Link>
                             </Navbar.Text>
                             <Navbar.Text>
-                               <Nav.Link as={Link} to={`/dashboard`}>My Events</Nav.Link>
-                            </Navbar.Text>
-                            <Navbar.Text>
                                 <Nav.Link><Button onClick={signOut} className="font-weight-bold" variant="warning">Sign Out</Button></Nav.Link>
                             </Navbar.Text>
                             </>:
                             <>
                             <Navbar.Text>
-                                <Nav.Link as={Link} to={`/login`}><Button className="font-weight-bold" variant="dark"><div className="px-4">Login</div></Button></Nav.Link>
+                                <Nav.Link as={Link} to={`/dashboard`}><Button className="font-weight-bold" variant="dark"><div className="px-4">Login</div></Button></Nav.Link>
                             </Navbar.Text>
                             </>
                         }

@@ -1,13 +1,28 @@
 import React from 'react';
 import { Col } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
+import { connect } from 'react-redux';
 import DashboardHeader from '../../Shared/DashboardHeader/DashboardHeader';
 
-const OrderForm = () => {
-    const { register, handleSubmit, errors } = useForm();
+const OrderForm = ({services, user}) => {
+    const { register, handleSubmit, errors, reset } = useForm();
 
-    const onSubmit = data => {
-        console.log(data);
+    const onSubmit = (data, event)=> {
+        event.preventDefault();
+        delete data.registrationfile;
+        data.serviceStatus = 'pending';
+        data.ordertime = (new Date()).toDateString();
+        fetch('http://localhost:5000/order',{
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(doc => {
+            if(doc.status === 'success') {
+                reset({name: user.name, email: user.email})
+            }
+        });
     }
     return (
         <>
@@ -15,35 +30,36 @@ const OrderForm = () => {
             <Col>
                 <form className="p-5 m-2 bg-white rounded" onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-group">
-                        <input type="text" ref={register({ required: true })} name="name" placeholder="Your name / Company name" className="form-control form-control-lg" defaultValue="Imamul Hassan" readonly="true"/>
+                        <input type="text" ref={register({ required: true })} name="name" placeholder="Your name / Company name" className="form-control form-control-lg" defaultValue={user.name} readonly="true"/>
                         {errors.name && <span className="text-danger">This field is required</span>}
 
                     </div>
                     <div className="form-group">
-                        <input type="email" ref={register({ required: true })} name="email" placeholder="Your email" className="form-control form-control-lg" defaultValue="pappuhassan@gmail.com" readonly="true"/>
+                        <input type="email" ref={register({ required: true })} name="email" placeholder="Your email" className="form-control form-control-lg" defaultValue={user.email} readonly="true"/>
                         {errors.email && <span className="text-danger">This field is required</span>}
                     </div>
                     <div className="form-group">
-                        <select className="form-control form-control-lg" name="servicename" ref={register({ required: true })} >
-                            <option disabled={true} value="Not set">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Not set">Other</option>
+                        <select className="form-control form-control-lg" name="serviceId" ref={register({ required: true })} >
+                            {
+                                services && services.map(srvc => {
+                                    return <option key={srvc._id} value={srvc._id}>{srvc.serviceName}</option>
+                                })
+                            }
                         </select>
-                        {errors.servicename && <span className="text-danger">This field is required</span>}
+                        {errors.serviceId && <span className="text-danger">This field is required</span>}
                     </div>
                     <div className="form-group">
-                        <textarea rows={5} ref={register({ required: true })} name="description" placeholder="Project description" className="form-control form-control-lg"/>
-                        {errors.description && <span className="text-danger">This field is required</span>}
+                        <textarea rows={5} ref={register({ required: true })} name="orderDescription" placeholder="Project description" className="form-control form-control-lg"/>
+                        {errors.orderDescription && <span className="text-danger">This field is required</span>}
                     </div>
                     <div className="form-group row">
                         <div className="col-6">
-                            <input ref={register({ required: true })} className="form-control form-control-lg" name="price" placeholder="Price" />
+                            <input ref={register({ required: true })} className="form-control form-control-lg" type="number" name="price" placeholder="Price" />
                             {errors.price && <span className="text-danger">This field is required</span>}
                         </div>
                         <div className="col-6">
-                            <button className="btn btn-outline-success btn-block"><input ref={register({ required: true })} name="projectfile" className="form-control bg-transparent" placeholder="Upload project file" type="file" /></button>
-                            {errors.projectfile && <span className="text-danger">This field is required</span>}
+                            <button className="btn btn-outline-success btn-block"><input ref={register({ required: true })} name="registrationfile" className="form-control bg-transparent" placeholder="Upload project file" type="file" /></button>
+                            {errors.registrationfile && <span className="text-danger">This field is required</span>}
                         </div>
                     </div>
 
@@ -55,5 +71,10 @@ const OrderForm = () => {
         </>
     );
 };
-
-export default OrderForm;
+const mapStateToProps = state => {
+    return{
+        services: state.services,
+        user: state.user
+    }
+}
+export default connect(mapStateToProps)(OrderForm);
