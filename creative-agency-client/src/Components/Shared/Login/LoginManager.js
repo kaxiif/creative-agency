@@ -13,7 +13,7 @@ export const handleGoogleSignIn = () => {
     .then( res => {
       const newUserInfo = res.user;
       const addRole = (userEmail, user) => {
-        fetch(`http://localhost:5000/adminSearch?email=${userEmail}`)
+        fetch(`https://afternoon-dawn-76282.herokuapp.com/adminSearch?email=${userEmail}`)
         .then(res => res.json())
         .then((data) =>{
           if(data.length > 0){

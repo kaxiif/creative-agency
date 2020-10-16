@@ -1,0 +1,31 @@
+[debug] [2020-10-16T13:00:03.180Z] ----------------------------------------------------------------------
+[debug] [2020-10-16T13:00:03.182Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\DCL\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2020-10-16T13:00:03.183Z] CLI Version:   8.12.0
+[debug] [2020-10-16T13:00:03.183Z] Platform:      win32
+[debug] [2020-10-16T13:00:03.183Z] Node Version:  v12.18.2
+[debug] [2020-10-16T13:00:03.184Z] Time:          Fri Oct 16 2020 19:00:03 GMT+0600 (GMT+06:00)
+[debug] [2020-10-16T13:00:03.184Z] ----------------------------------------------------------------------
+[debug] [2020-10-16T13:00:03.184Z] 
+[debug] [2020-10-16T13:00:03.191Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-10-16T13:00:03.191Z] > authorizing via signed-in user
+[debug] [2020-10-16T13:00:03.191Z] [iam] checking project creative-agency-ltd for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2020-10-16T13:00:03.194Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/creative-agency-ltd:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2020-10-16T13:00:04.887Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 16 Oct 2020 13:00:04 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=942","alt-svc":"h3-Q050=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-10-16T13:00:04.889Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/creative-agency-ltd  
+ 
+[debug] [2020-10-16T13:00:05.481Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 16 Oct 2020 13:00:05 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-Q050=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Deploying to 'creative-agency-ltd'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2020-10-16T13:00:05.486Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/creative-agency-ltd/versions  
+ {"config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2020-10-16T13:00:08.084Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 16 Oct 2020 13:00:07 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-Q050=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] i  hosting[creative-agency-ltd]: beginning deploy... 
+[info] i  hosting[creative-agency-ltd]: found 41 files in build 
+[debug] [2020-10-16T13:00:08.137Z] [hosting] hash cache [YnVpbGQ] not populated
+[debug] [2020-10-16T13:00:09.060Z] [hosting] hash cache [YnVpbGQ] stored for 41 files
+[debug] [2020-10-16T13:00:09.060Z] [hosting][hash queue][FINAL] {"max":907,"min":30,"avg":85.70731707317073,"active":0,"complete":41,"success":41,"errored":0,"retried":0,"total":41,"elapsed":923}
+[debug] [2020-10-16T13:00:09.060Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/creative-agency-ltd/versions/4b2b5c800d5aa892:populateFiles  
+ <request body omitted>

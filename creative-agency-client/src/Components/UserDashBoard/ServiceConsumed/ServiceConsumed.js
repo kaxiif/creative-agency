@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { fetchOrderData } from '../../../Redux/AgencyActions/AgencyActions';
 import DashboardHeader from '../../Shared/DashboardHeader/DashboardHeader';
 import ConsumedItem from '../ConsumedItem/ConsumedItem';
 
-const ServiceConsumed = ({user, services}) => {
+const ServiceConsumed = ({consumedServices, fetchOrderData, user, services}) => {
     const userEmail = user.email;
-    const [consumedServices, setConsumedServices] = useState([]);
     
     useEffect(() => {
         const fetchOpertaion = async () => {
-            await fetch(`http://localhost:5000/getOrdersFor?user=${userEmail}`,{
+            await fetch(`https://afternoon-dawn-76282.herokuapp.com/getOrdersFor?user=${userEmail}`,{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,12 +43,12 @@ const ServiceConsumed = ({user, services}) => {
                     return order;
                 })
 
-                setConsumedServices(data);
+                fetchOrderData(data);
             })
             .catch(err => console.log(err.message));
         }
         fetchOpertaion();
-    }, [services, userEmail]);
+    }, [services, userEmail, fetchOrderData]);
 
     return (
         <>
@@ -65,8 +65,12 @@ const ServiceConsumed = ({user, services}) => {
 const mapStateToProps = state => {
     return {
         user: state.user,
-        services: state.services
+        services: state.services,
+        consumedServices: state.orders
     }
 }
 
-export default connect(mapStateToProps)(ServiceConsumed);
+const mapDispatchToProps = {
+    fetchOrderData : fetchOrderData
+}
+export default connect(mapStateToProps, mapDispatchToProps)(ServiceConsumed);

@@ -16,9 +16,7 @@ const HomeIndex = () => {
             <RecentWorks></RecentWorks>
             <ClientFeedback></ClientFeedback>
         </main>
-        <footer>
-            <Footer></Footer>
-        </footer>
+        <Footer></Footer>
         </>
     );
 };

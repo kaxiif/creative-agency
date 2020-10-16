@@ -3,6 +3,7 @@ export const FETCH_SERVICE_DATA = 'FETCH_SERVICE_DATA';
 export const FETCH_SERVICES_SUCCESS = 'FETCH_SERVICES_SUCCESS';
 export const FETCH_SERVICES_FALIURE = 'FETCH_SERVICES_FALIURE';
 export const FETCH_REVIEW_DATA = 'FETCH_REVIEW_DATA';
+export const FETCH_ORDER_DATA = 'FETCH_ORDER_DATA';
 
 
 
@@ -25,4 +26,8 @@ export const fetchServicesFailure = error => {
 
 export const fetchReviewData = reviews => {
     return { type: FETCH_REVIEW_DATA, reviews}
+}
+
+export const fetchOrderData = orders => {
+    return { type: FETCH_ORDER_DATA, orders}
 }

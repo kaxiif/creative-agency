@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import HomeIndex from './Components/HomePage/HomeIndex/HomeIndex';
 import { fetchReviewData, fetchServicesData, fetchServicesFailure, fetchServicesSuccess } from './Redux/AgencyActions/AgencyActions';
 import { connect } from 'react-redux';
-import { reviews } from './FakeData/reviews';
 import Login from './Components/Shared/Login/Login';
 import DashboardNav from './Components/Shared/DashboardNav/DashboardNav';
 import PrivateRoute from './Components/Shared/PrivateRoute/PrivateRoute';
@@ -13,9 +12,9 @@ import PrivateRoute from './Components/Shared/PrivateRoute/PrivateRoute';
 function App({fetchServicesData, fetchServicesSuccess, fetchReviewData, fetchServicesFailure}) {
 
   useEffect(() => {
-    const fetchOpertaion = async () => {
+    const fetchServiceOpertaion = async () => {
       fetchServicesData();
-      await fetch('http://localhost:5000/getServices')
+      await fetch('https://afternoon-dawn-76282.herokuapp.com/getServices')
       .then(res => res.json())
       .then(data =>{
           fetchServicesSuccess(data);
@@ -24,8 +23,16 @@ function App({fetchServicesData, fetchServicesSuccess, fetchReviewData, fetchSer
           fetchServicesFailure(err.message);
         });
       }
-      fetchOpertaion();
-    fetchReviewData([...reviews]);
+
+      const fetchReviewOpertaion = async () => {
+        await fetch('https://afternoon-dawn-76282.herokuapp.com/getReviews')
+        .then(res => res.json())
+        .then(data =>{
+          fetchReviewData(data);
+          })
+        }
+      fetchServiceOpertaion();
+      fetchReviewOpertaion();
   }, [fetchServicesSuccess, fetchServicesData, fetchReviewData, fetchServicesFailure]);
 
   return (
@@ -37,10 +44,10 @@ function App({fetchServicesData, fetchServicesSuccess, fetchReviewData, fetchSer
           <Route path="/login">
             <Login></Login>
           </Route>
-          <PrivateRoute path="/dashboard">
+          <PrivateRoute exact path="/dashboard">
             <DashboardNav></DashboardNav>
           </PrivateRoute>
-          <PrivateRoute path="/dashboard/:service">
+          <PrivateRoute exact path="/dashboard/:serviceId">
             <DashboardNav></DashboardNav>
           </PrivateRoute>
         </Switch>

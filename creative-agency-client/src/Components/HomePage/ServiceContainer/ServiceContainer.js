@@ -14,7 +14,7 @@ const ServiceContainer = ({loading, services}) => {
                     <Row  className="py-5">
                         <CardDeck>
                         {
-                            services.map(srvc => <ServiceItem key={srvc.name} data={srvc}></ServiceItem>)
+                            services.map(srvc => <ServiceItem key={srvc._id} data={srvc}></ServiceItem>)
                         }
                         </CardDeck>
                     </Row>

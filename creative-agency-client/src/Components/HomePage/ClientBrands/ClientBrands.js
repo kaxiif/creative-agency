@@ -26,7 +26,7 @@ const clientBrands = [
 
 const ClientBrands = () => {
     return (
-        <Container className="mt-4">
+        <Container className="my-3">
             <Row className="align-items-center justify-content-around text-center">
                 {
                     clientBrands.map((brand, idx) => 

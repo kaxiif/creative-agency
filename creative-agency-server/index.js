@@ -40,6 +40,7 @@ client.connect(err => {
     const serviceCollection = client.db("creative-agency-db").collection("services");
     const adminCollection = client.db("creative-agency-db").collection("admins");
     const serviceRegistrationCollection = client.db("creative-agency-db").collection("serviceRegistration");
+    const reviewCollection = client.db("creative-agency-db").collection("reviews");
 
     app.post('/addService',upload.single('serviceBanner'), (req, res) => {
         const img = fs.readFileSync(req.file.path);
@@ -66,6 +67,14 @@ client.connect(err => {
 
     app.get('/getServices', (req, res) => {
         serviceCollection.find({})
+        .toArray((err, documents) => {
+            if(err) console.log(err);
+            res.send(documents)
+        })
+    })
+
+    app.get('/getReviews', (req, res) => {
+        reviewCollection.find().limit(3).hint( { $natural : -1 } )
         .toArray((err, documents) => {
             if(err) console.log(err);
             res.send(documents)
@@ -119,41 +128,25 @@ client.connect(err => {
         })
     })
 
+    app.post('/postReview', (req, res) => {
+        const review = req.body;
+        reviewCollection.insertOne(review)
+        .then((result) => {
+            if(result.insertedCount > 0){
+                res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`});
+            }
+            else{
+                res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`})
+            }
+        })
+    })
+
     app.get('/adminSearch', (req, res) => {
         const {email} = req.query;
         adminCollection.find({ adminEmail : email})
         .toArray((err, documents) => {
             res.send(documents);
         })
-    })
-
-    app.get('/events', (req, res) => {
-        const bearer = req.headers.authorization;
-        if(bearer && bearer.startsWith('Bearer ')){
-          const userToken = bearer.split(' ')[1];
-          admin.auth().verifyIdToken(userToken)
-          .then(function(decodedToken) {
-            if(decodedToken.email == req.query.email){
-              registrationCollection.find({email: req.query.email})
-              .toArray((err, documents) => {
-                  documents.map(doc => {
-                      delete doc.photo;
-                      delete doc.title;
-                      delete doc.description;
-                  })
-                  res.send(documents);
-              })
-            }
-            else{
-              res.status(401).send('Un Authorized!!');
-            }
-          }).catch(function(error) {
-            res.status(401).send('Un Authorized!!');
-          });
-        }
-        else{
-          res.status(401).send('Un Authorized!!');
-        }
     })
 
     app.get('/getOrders', (req, res) => {
@@ -197,36 +190,11 @@ client.connect(err => {
     })
 
     app.patch('/updateStatus/:id', (req, res) => {
-        console.log(req.body);
         serviceRegistrationCollection.updateOne({_id : ObjectId(req.params.id)},
         {
             $set:{ serviceStatus: req.body.status}
         })
         .then(result => res.send(result.modifiedCount > 0));
-    })
-
-    app.get('/deleteRegistration/:id', (req, res) => {
-        const id = req.params.id;
-        const bearer = req.headers.authorization;
-        if(bearer && bearer.startsWith('Bearer ')){
-          const userToken = bearer.split(' ')[1];
-          admin.auth().verifyIdToken(userToken)
-          .then(function(decodedToken) {
-                registrationCollection.deleteOne({_id: ObjectId(id)})
-                .then(result => {
-                    if(result.deletedCount > 0){
-                        res.send(JSON.stringify({status: 'success', message: '<p className="text-success">Successfully deleted.</p>'}))
-                    }else{
-                        res.send(JSON.stringify({status: 'error', message: '<p className="text-danger">Something went wrong.</p>'}))
-                    }
-                })
-          }).catch(function(error) {
-            res.status(401).send({"status":"Unautorized 1"});
-          });
-        }
-        else{
-          res.status(401).send({"status":"Unautorized 1"});
-        }
     })
 
 });

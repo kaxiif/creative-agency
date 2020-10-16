@@ -6,7 +6,7 @@ const OrderListItem = ({data}) => {
 
     const handleServiceStatusChange = (status, orderId) => {
         const objectStatus = {status}
-        fetch(`http://localhost:5000/updateStatus/${orderId}`, {
+        fetch(`https://afternoon-dawn-76282.herokuapp.com/updateStatus/${orderId}`, {
                 method: 'PATCH',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(objectStatus)

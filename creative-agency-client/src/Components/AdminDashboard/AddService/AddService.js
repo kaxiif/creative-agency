@@ -12,7 +12,7 @@ const AddService = () => {
         serviceData.append('serviceBanner', data.servicebanner[0]);
 
 
-        fetch('http://localhost:5000/addService', {
+        fetch('https://afternoon-dawn-76282.herokuapp.com/addService', {
             method: 'POST',
             body: serviceData
         })

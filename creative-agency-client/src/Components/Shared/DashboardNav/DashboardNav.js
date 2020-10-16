@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Image, Nav, Row, Tab } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faSignOutAlt, faList, faComment, faPlus, faLockOpen, faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import OrderForm from '../../UserDashBoard/OrderForm/OrderForm';
 import ServiceConsumed from '../../UserDashBoard/ServiceConsumed/ServiceConsumed';
 import GiveReview from '../../UserDashBoard/GiveReview/GiveReview';
@@ -12,8 +12,10 @@ import MakeAdmin from '../../AdminDashboard/MakeAdmin/MakeAdmin';
 import { connect } from 'react-redux';
 import { handleSignOut } from '../Login/SignOutManager';
 import { addLoggedinUser } from '../../../Redux/AgencyActions/AgencyActions';
+import './DashboardNav.css';
 
 const DashboardNav = ({user, addLoggedinUser}) => {
+    const {serviceId} = useParams() || {serviceId: -1};
     const {role} = user;
     
     const location = useLocation();
@@ -33,13 +35,13 @@ const DashboardNav = ({user, addLoggedinUser}) => {
 
     return (
         <section>
-            <Tab.Container defaultActiveKey={role === 'admin'  ? "adminservicelist" : "order"}>
+            <Tab.Container  defaultActiveKey={role === 'admin'  ? "adminservicelist" : "order"}>
                 <Row>
-                    <Col sm={3} style={{padding: '0px'}}>
-                        <Nav variant="tabs" className="justify-content-around flex-column bg-warning min-vh-100">
+                    <Col sm={3} className="sidenav" style={{padding: '0px'}}>
+                        <Nav variant="tabs" className="justify-content-between flex-column bg-warning min-vh-100">
                             <div>
                                 <Nav.Item className="py-5">
-                                    <Nav.Link className="text-center"><Image  width={180} src="/images/logos/applogo.png" alt="Group"/></Nav.Link>
+                                    <Nav.Link as={Link} to={`/`} className="text-center"><Image  width={180} src="/images/logos/applogo.png" alt="Group"/></Nav.Link>
                                 </Nav.Item>
                                 {
                                     role === 'admin' ?
@@ -78,7 +80,7 @@ const DashboardNav = ({user, addLoggedinUser}) => {
                     <Col style={{backgroundColor: '#E5E5E5', padding: '0px', overflow: 'hidden'}} sm={9}>
                         <Tab.Content>
                             <Tab.Pane eventKey="order">
-                                <OrderForm></OrderForm>
+                                <OrderForm serviceId={serviceId}></OrderForm>
                             </Tab.Pane>
                             <Tab.Pane eventKey="servicelist">
                                 <ServiceConsumed></ServiceConsumed>

@@ -5,7 +5,7 @@ const ConsumedItem = ({data}) => {
     const {photo} = data;
     return (
         <>
-        <Col style={{ maxWidth: '400px', borderRadius: '20px'}} md={6} className="bg-white p-3">
+        <Col style={{ maxWidth: '400px', borderRadius: '20px'}} md={6} className="bg-white my-2 p-3">
             <Row className="justify-content-between align-items-center">
                         <Col md={6}>
                             <Image width={80} src={`data:${photo.contentType};base64,${photo.image}`} alt={data.name} fluid/>

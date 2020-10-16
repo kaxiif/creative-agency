@@ -5,7 +5,7 @@ import ReviewItem from '../ReviewItem/ReviewItem';
 
 const ClientFeedback = ({reviews}) => {
     return (
-        <section style={{height: '600px'}} className="d-flex justify-content-center align-items-center">
+        <section className="my-auto py-5 d-flex justify-content-center align-items-center">
             <Container>
                 <Row>
                     <Col>
@@ -14,7 +14,7 @@ const ClientFeedback = ({reviews}) => {
                 </Row>
                 <Row className="mt-5">
                     {
-                        reviews.map(review => <ReviewItem data={review} key={review.reviewId}></ReviewItem>)
+                        reviews.map(review => <ReviewItem data={review} key={review._id}></ReviewItem>)
                     }
                 </Row>
             </Container>

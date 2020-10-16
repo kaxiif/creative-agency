@@ -2,9 +2,10 @@ import React from 'react';
 import { Col } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 import { connect } from 'react-redux';
+import { fetchOrderData } from '../../../Redux/AgencyActions/AgencyActions';
 import DashboardHeader from '../../Shared/DashboardHeader/DashboardHeader';
 
-const OrderForm = ({services, user}) => {
+const OrderForm = ({services, user, orders, fetchOrderData, serviceId}) => {
     const { register, handleSubmit, errors, reset } = useForm();
 
     const onSubmit = (data, event)=> {
@@ -12,7 +13,7 @@ const OrderForm = ({services, user}) => {
         delete data.registrationfile;
         data.serviceStatus = 'pending';
         data.ordertime = (new Date()).toDateString();
-        fetch('http://localhost:5000/order',{
+        fetch('https://afternoon-dawn-76282.herokuapp.com/order',{
             method: 'POST',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify(data)
@@ -20,6 +21,8 @@ const OrderForm = ({services, user}) => {
         .then(res => res.json())
         .then(doc => {
             if(doc.status === 'success') {
+                //const addNewOrder = [...orders, data];
+                //fetchOrderData(addNewOrder); //Image issue
                 reset({name: user.name, email: user.email})
             }
         });
@@ -38,16 +41,30 @@ const OrderForm = ({services, user}) => {
                         <input type="email" ref={register({ required: true })} name="email" placeholder="Your email" className="form-control form-control-lg" defaultValue={user.email} readonly="true"/>
                         {errors.email && <span className="text-danger">This field is required</span>}
                     </div>
-                    <div className="form-group">
-                        <select className="form-control form-control-lg" name="serviceId" ref={register({ required: true })} >
-                            {
-                                services && services.map(srvc => {
-                                    return <option key={srvc._id} value={srvc._id}>{srvc.serviceName}</option>
-                                })
-                            }
-                        </select>
-                        {errors.serviceId && <span className="text-danger">This field is required</span>}
-                    </div>
+                    {
+                        serviceId ?
+                        <div className="form-group">
+                            <select className="form-control form-control-lg" defaultValue={serviceId} name="serviceId" ref={register({ required: true })} readonly="true">
+                                {
+                                    services && services.map(srvc => {
+                                        return <option key={srvc._id} value={srvc._id}>{srvc.serviceName}</option>
+                                    })
+                                }
+                            </select>
+                            {errors.serviceId && <span className="text-danger">This field is required</span>}
+                        </div>
+                        :
+                        <div className="form-group">
+                            <select className="form-control form-control-lg" name="serviceId" ref={register({ required: true })} >
+                                {
+                                    services && services.map(srvc => {
+                                        return <option key={srvc._id} value={srvc._id}>{srvc.serviceName}</option>
+                                    })
+                                }
+                            </select>
+                            {errors.serviceId && <span className="text-danger">This field is required</span>}
+                        </div>
+                    }
                     <div className="form-group">
                         <textarea rows={5} ref={register({ required: true })} name="orderDescription" placeholder="Project description" className="form-control form-control-lg"/>
                         {errors.orderDescription && <span className="text-danger">This field is required</span>}
@@ -74,7 +91,13 @@ const OrderForm = ({services, user}) => {
 const mapStateToProps = state => {
     return{
         services: state.services,
-        user: state.user
+        user: state.user,
+        orders: state.orders
     }
 }
-export default connect(mapStateToProps)(OrderForm);
+
+const mapDispatchToProps = {
+    fetchOrderData : fetchOrderData
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderForm);

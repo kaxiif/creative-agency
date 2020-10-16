@@ -9,7 +9,7 @@ const AdminServiceList = ({services}) => {
     
     useEffect(() => {
         const fetchOpertaion = async () => {
-            await fetch('http://localhost:5000/getOrders',{
+            await fetch('https://afternoon-dawn-76282.herokuapp.com/getOrders',{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

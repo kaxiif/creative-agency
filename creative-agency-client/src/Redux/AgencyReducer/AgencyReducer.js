@@ -1,4 +1,4 @@
-import { FETCH_REVIEW_DATA, FETCH_SERVICES_FALIURE, FETCH_SERVICES_SUCCESS, FETCH_SERVICE_DATA, LOGIN_NEW_USER } from "../AgencyActions/AgencyActions";
+import { FETCH_ORDER_DATA, FETCH_REVIEW_DATA, FETCH_SERVICES_FALIURE, FETCH_SERVICES_SUCCESS, FETCH_SERVICE_DATA, LOGIN_NEW_USER } from "../AgencyActions/AgencyActions";
 
 
 const initialState = {
@@ -6,6 +6,7 @@ const initialState = {
     user : [],
     services : [],
     reviews: [],
+    orders:[],
     error: ''
 }
 
@@ -41,6 +42,11 @@ export const agencyReducer = (state = initialState, actions) => {
             return {
                 ...state,
                 reviews: actions.reviews
+            }
+        case FETCH_ORDER_DATA:
+            return{
+                ...state,
+                orders: actions.orders
             }
         default:
             return state;

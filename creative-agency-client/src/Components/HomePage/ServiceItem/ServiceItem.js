@@ -7,8 +7,8 @@ const ServiceItem = ({data}) => {
     const {photo} = data;
     return (
         <>
-            <Col md={4}>
-                <Link to={`/dashboard`} className="text-decoration-none">
+            <Col md={4} sm={6}>
+                <Link to={`/dashboard/${data._id}`} className="text-decoration-none">
                 <motion.div whileHover={{scale: 1.1, boxShadow: "0px 0px 20px lightgray"}} className="text-center rounded p-1"> 
                     <div className="p-3 m-1">
                         <Image width={100} src={`data:${photo.contentType};base64,${photo.image}`} alt={data.name} fluid />
