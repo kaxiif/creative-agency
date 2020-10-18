@@ -1,8 +1,10 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { connect } from 'react-redux';
+import { fetchServicesSuccess } from '../../../Redux/AgencyActions/AgencyActions';
 import DashboardHeader from '../../Shared/DashboardHeader/DashboardHeader';
 
-const AddService = () => {
+const AddService = ({services, fetchServicesSuccess}) => {
     const { register, handleSubmit, errors, reset } = useForm();
 
     const onSubmit = data => {
@@ -17,8 +19,11 @@ const AddService = () => {
             body: serviceData
         })
         .then(res => res.json())
-        .then(data => {
-            if(data.status === 'success'){
+        .then(doc => {
+            console.log(doc);
+            if(doc){
+                const addNewService = [doc, ...services];
+                fetchServicesSuccess(addNewService);
                 reset();
             }
         })
@@ -57,4 +62,14 @@ const AddService = () => {
     );
 };
 
-export default AddService;
+const mapStateToProps = state => {
+    return {
+        services: state.services
+    }
+}
+
+const mapDispatchToProps = {
+    fetchServicesSuccess : fetchServicesSuccess
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddService);

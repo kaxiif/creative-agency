@@ -72,7 +72,7 @@ const DashboardNav = ({user, addLoggedinUser}) => {
                             </div>
                             <div>
                                 <Nav.Item>
-                                    <Nav.Link onClick={signOut} as={Link} className="text-decoration-none text-dark font-weight-bold"><FontAwesomeIcon icon={faSignOutAlt} /><span className="mx-2">Logout</span></Nav.Link>
+                                    <Nav.Link onClick={signOut} as={Link} to={`/`} className="text-decoration-none text-dark font-weight-bold"><FontAwesomeIcon icon={faSignOutAlt} /><span className="mx-2">Logout</span></Nav.Link>
                                 </Nav.Item>
                             </div>
                         </Nav>

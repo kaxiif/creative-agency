@@ -17,9 +17,9 @@ const GiveReview = ({user, reviews, fetchReviewData}) => {
         })
         .then(res => res.json())
         .then(doc => {
-            if(doc.status === 'success') {
-                const addNewReview = [...reviews, data];
-                fetchReviewData(addNewReview.slice(addNewReview.length-4, addNewReview.length-1));
+            if(doc) {
+                const addNewReview = [doc, ...reviews];
+                fetchReviewData(reviews.length > 3 ? addNewReview.slice(addNewReview.length-4, addNewReview.length-1) : addNewReview);
                 reset({name: user.name})
             }
         });
@@ -30,7 +30,7 @@ const GiveReview = ({user, reviews, fetchReviewData}) => {
             <DashboardHeader displayOption="Review"></DashboardHeader>
             <form className="p-5 m-2 bg-white rounded" onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-group">
-                        <input type="text" ref={register({ required: true })} name="name" placeholder="Your name" className="form-control form-control-lg" defaultValue={user.name} readonly="true"/>
+                        <input type="text" ref={register({ required: true })} name="name" placeholder="Your name" className="form-control form-control-lg" defaultValue={user.name} readOnly={true}/>
                         {errors.name && <span className="text-danger">This field is required</span>}
 
                     </div>

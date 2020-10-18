@@ -8,7 +8,7 @@ const ConsumedItem = ({data}) => {
         <Col style={{ maxWidth: '400px', borderRadius: '20px'}} md={6} className="bg-white my-2 p-3">
             <Row className="justify-content-between align-items-center">
                         <Col md={6}>
-                            <Image width={80} src={`data:${photo.contentType};base64,${photo.image}`} alt={data.name} fluid/>
+                            <Image width={80} src={photo} alt={data.name} fluid/>
                         </Col>
                         <Col md={6}>
                             <Button variant={`outline-${data.btnBg}`} className="px-5 font-weight-bold">{data.serviceStatus.toUpperCase()}</Button>

@@ -1,6 +1,7 @@
 const express = require('express');
 require('dotenv').config()
 const multer = require('multer');
+const cloudinary = require('cloudinary');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -16,6 +17,11 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+cloudinary.config({ 
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.API_KEY, 
+    api_secret: process.env.API_SECRET 
+  });
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -42,27 +48,24 @@ client.connect(err => {
     const serviceRegistrationCollection = client.db("creative-agency-db").collection("serviceRegistration");
     const reviewCollection = client.db("creative-agency-db").collection("reviews");
 
-    app.post('/addService',upload.single('serviceBanner'), (req, res) => {
-        const img = fs.readFileSync(req.file.path);
-        const encode_img = img.toString('base64');
-
-        const final_img = {
-            contentType : req.file.mimetype,
-            path: req.file.path,
-            image: new Buffer.from(encode_img,'base64')
+    app.post('/addService',upload.single('serviceBanner'), async (req, res) => {
+        const result = await cloudinary.uploader.upload(req.file.path).catch(cloudError => console.log(cloudError));
+        if(result){
+            const serviceData = {...req.body, photo: result.secure_url};  
+            serviceCollection.insertOne(serviceData)
+            .then(result => {
+                if(result.insertedCount < 0){
+                    res.send({"status": "error","message": `<p className="text-danger">Data corrupted</p>`})
+                }
+                else{
+                    res.send(result.ops[0]);
+                }
+            })
+            .catch(dbError => console.log(dbError));
         }
-
-        const serviceData = {...req.body, photo: final_img};
-        
-        serviceCollection.insertOne(serviceData)
-        .then(result => {
-            if(result.insertedCount < 0){
-                res.send({"status": "error","message": `<p className="text-danger">Data corrupted</p>`})
-            }
-            else{
-                res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`})
-            }
-        })
+        else{
+            res.status(404).send('Upload Failed');
+        }
     })
 
     app.get('/getServices', (req, res) => {
@@ -78,14 +81,6 @@ client.connect(err => {
         .toArray((err, documents) => {
             if(err) console.log(err);
             res.send(documents)
-        })
-    })
-
-    app.get('/event/:id', (req, res) => {
-        serviceCollection.find({ _id : ObjectId(req.params.id)})
-        .toArray((err, documents) => {
-            documents.map(doc => delete doc.photo);
-            res.send(documents);
         })
     })
 
@@ -120,7 +115,7 @@ client.connect(err => {
         serviceRegistrationCollection.insertOne(orderInfo)
         .then((result) => {
             if(result.insertedCount > 0){
-                res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`});
+                res.send(result.ops[0]);
             }
             else{
                 res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`})
@@ -133,7 +128,7 @@ client.connect(err => {
         reviewCollection.insertOne(review)
         .then((result) => {
             if(result.insertedCount > 0){
-                res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`});
+                res.send(result.ops[0]);
             }
             else{
                 res.send({"status": "success","message": `<p className="text-success">Data inserted!</p>`})

@@ -39,7 +39,8 @@ const Login = ({user, addLoggedinUser}) => {
                 <Image width={180} src="/images/logos/applogo.png" alt="Group" />
                 <div className="p-5 border border-dark bg-white w-50 mx-auto mt-4 rounded" style={{ minHeight: ''}}>
                     <h1 className="font-weight-bold">Login</h1>
-                    <Button onClick={handleGoogle} variant="outline-secondary" className="mt-5 btn btn-block rounded-pill"><Image className="mx-5" width={22} src="/images/icons/Google.png" alt="Google" fluid/><span>Sign In With Google</span></Button>
+		    <p className="py-3">Admin : <span className="text-danger">programming.hero1@gmail.com</span></p>
+                    <Button onClick={handleGoogle} variant="outline-secondary" className="mt-5 btn btn-block rounded-pill"><Image className="mx-5" width={22} src="/images/icons/google.png" alt="Google" fluid/><span>Sign In With Google</span></Button>
                     <p className="mt-3">Don't have an account? <Link className="text-primary" role="button" to="/login">Crate an account.</Link></p>
                 </div>
             </div>

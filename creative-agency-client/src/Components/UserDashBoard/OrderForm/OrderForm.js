@@ -20,9 +20,29 @@ const OrderForm = ({services, user, orders, fetchOrderData, serviceId}) => {
         })
         .then(res => res.json())
         .then(doc => {
-            if(doc.status === 'success') {
-                //const addNewOrder = [...orders, data];
-                //fetchOrderData(addNewOrder); //Image issue
+            if(doc) {
+                const servicesList =  [...services];
+                const seletedService =  servicesList.filter(srvc => srvc._id === doc.serviceId)[0];
+                doc.serviceName = seletedService.serviceName;
+                doc.photo = seletedService.photo;
+                doc.serviceDesc = seletedService.serviceDesc;
+                if(doc.serviceStatus === 'pending'){
+                    doc.btnBg = 'info';
+                }
+                else if(doc.serviceStatus === 'running'){
+                    doc.btnBg = 'warning';
+                }
+                else if(doc.serviceStatus === 'done'){
+                    doc.btnBg = 'success';
+                }
+                else if(doc.serviceStatus === 'rejected'){
+                    doc.btnBg = 'danger'
+                }
+                else{
+                    doc.btnBg = 'dark'
+                }
+                const addNewOrder = [doc, ...orders];
+                fetchOrderData(addNewOrder);
                 reset({name: user.name, email: user.email})
             }
         });
@@ -33,12 +53,12 @@ const OrderForm = ({services, user, orders, fetchOrderData, serviceId}) => {
             <Col>
                 <form className="p-5 m-2 bg-white rounded" onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-group">
-                        <input type="text" ref={register({ required: true })} name="name" placeholder="Your name / Company name" className="form-control form-control-lg" defaultValue={user.name} readonly="true"/>
+                        <input type="text" ref={register({ required: true })} name="name" placeholder="Your name / Company name" className="form-control form-control-lg" defaultValue={user.name} readOnly={true}/>
                         {errors.name && <span className="text-danger">This field is required</span>}
 
                     </div>
                     <div className="form-group">
-                        <input type="email" ref={register({ required: true })} name="email" placeholder="Your email" className="form-control form-control-lg" defaultValue={user.email} readonly="true"/>
+                        <input type="email" ref={register({ required: true })} name="email" placeholder="Your email" className="form-control form-control-lg" defaultValue={user.email} readOnly={true}/>
                         {errors.email && <span className="text-danger">This field is required</span>}
                     </div>
                     {
