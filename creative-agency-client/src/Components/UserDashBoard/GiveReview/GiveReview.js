@@ -19,7 +19,7 @@ const GiveReview = ({user, reviews, fetchReviewData}) => {
         .then(doc => {
             if(doc) {
                 const addNewReview = [doc, ...reviews];
-                fetchReviewData(reviews.length > 3 ? addNewReview.slice(addNewReview.length-4, addNewReview.length-1) : addNewReview);
+                fetchReviewData(reviews.length > 2 ? addNewReview.slice(0,3) : addNewReview);
                 reset({name: user.name})
             }
         });
